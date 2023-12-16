@@ -135,6 +135,25 @@ for i = 1:n_subs
         % calculate mean exit time for all stable points
         mean_exit_all = mod.mean_exit('all', mod.pdf);
 
+        % after this step one can plot the mean exit time
+        % mod.plot('mean_exit')
+        % mean exit time is calculated for each of the stable points
+        % the calculation of each mean exit time depend on what is on the 
+        % left and what is on the right of the stable point, i.e. an
+        % unstable point or an edge. This can be seen from 
+        % mean_exit_all{i}.BC where 'R' means repulsive generally an edge
+        % and 'A' means attractive generally an unstable point.
+        % When you have 'RA' or 'AR' generally the mean exit time is
+        % simpler to calculate. When you have 'AA' you are in between 2
+        % unstable points, this means that the mean exit time is a little
+        % more complicated, thus the calculation includes attraction from
+        % both left and right side which you can still see in the plot in
+        % blue and magenta. At the end the final value of mean exit time is
+        % always contained in mean_exit_all{i}.WT and is expressed in days.
+        % to calculate
+
+
+
         % find most stable point: highest mean exit time. The most stable
         % point can still be in case 3 or 4, meaning having the unstable 
         % point on the right and on the left.
