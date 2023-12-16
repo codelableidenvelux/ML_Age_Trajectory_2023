@@ -31,6 +31,7 @@ all_has_unstable = zeros(1, n_subs);
 all_left_right_combo = zeros(4, n_subs);
 all_left_right_depth = zeros(2, n_subs);
 all_left_right_width = zeros(2, n_subs);
+exit_times = zeros(1, n_subs);
 
 
 % We have 4 cases
@@ -42,7 +43,6 @@ all_left_right_width = zeros(2, n_subs);
 for i = 1:n_subs
     % get trajectory for subject
     x_ = double(sorted_preds{i});
-%     x_(x_ == mode(x_)) = NaN;
 
     % calculate median predicted age over the trajectory
     median_predicted_ages(i) = median(x_, 'omitnan');
@@ -62,6 +62,8 @@ for i = 1:n_subs
     bw = 0.3 * std(x_, 'omitnan');
     DT = 1;
     nx = length(diff(x_));
+    % Calculate the Langevin reconstruction by means of the mesh method 
+    % as opposed to the bin method in Arani et al.
     results_M = LangevinReconst_MESH(x_,diff(x_),nx,DT,bw,length(avec),avec);
 
     % get the model from the results
@@ -72,12 +74,13 @@ for i = 1:n_subs
     ueff = mod.potential_eff.ueff;
     U = ueff(mod.potential_eff.dom);
     normU = @(x) ueff(x) - min(U) + 0.1 * (max(U) - min(U));
-    % sometimes we get complex numbers
+
+    % sometimes we get complex numbers, model has failed, we skip sample
     if ~isreal(U)
         continue
     end
 
-    % first order approximation of the average derivative of theDT landscape
+    % first order approximation of the average derivative of the DT landscape
     derivative_x =  diff(U);
     derivative_patterns(i) = mean(derivative_x);
 
@@ -99,20 +102,17 @@ for i = 1:n_subs
     % wheter or not an unstable point is present
     all_has_unstable(i) = ~isempty(unstable_eq);
 
+    % pre-allocation
     slopes = zeros(1, length(stable_eq));
-    depths = zeros(1, length(stable_eq));
-    widths = zeros(1, length(stable_eq));
-    exit_times = zeros(1, length(stable_eq));
     eq = cell(1, length(stable_eq));
-
-    
 
     % we do not consider cases (1) when no stable points are present
     if isempty(stable_eq)
         continue
     end
 
-    % no unstable points I am in case 1 with only 1 stable point.
+    % no unstable points: case 1 with only 1 stable point. We clculate
+    % slope of left and right edges.
     if (~isempty(stable_eq)) && (isempty(unstable_eq))
 
         x_eq = stable_eq(1).x;
@@ -135,7 +135,9 @@ for i = 1:n_subs
         % calculate mean exit time for all stable points
         mean_exit_all = mod.mean_exit('all', mod.pdf);
 
-        % find most stable point
+        % find most stable point: highest mean exit time. The most stable
+        % point can still be in case 3 or 4, meaning having the unstable 
+        % point on the right and on the left.
         [~, long_exit] = max(cellfun(@(x) x.WT, mean_exit_all));
         exit_times(i) = mean_exit_all{long_exit}.WT;
 
@@ -155,11 +157,11 @@ for i = 1:n_subs
         [slope_right, width_right, depth_right] = calc_slope(x_eq, y_eq, x_right, y_right);
         [slope, width, depth] = calc_slope(x_eq, y_eq, x_un, y_un);
 
-        if slope > 0 % unstable on the right - 3
+        if slope > 0 % unstable point on the right - 3
             all_left_right_combo([1, 3], i) = [slope_left, slope];
             all_left_right_width(2, i) = width;
             all_left_right_depth(2, i) = depth;
-        else % unstable on the right - 4
+        else % unstable point on the right - 4
             all_left_right_combo([2, 4], i) = [slope, slope_right];
             all_left_right_width(1, i) = width;
             all_left_right_depth(1, i) = depth;
@@ -172,7 +174,7 @@ for i = 1:n_subs
         % calculate mean exit time for all stable points
         mean_exit_all = mod.mean_exit('all', mod.pdf);
        
-        % find most stable point
+        % find most stable point (max mean exit time)
         [~, long_exit] = max(cellfun(@(x) x.WT, mean_exit_all));
         exit_times(i) = mean_exit_all{long_exit}.WT;
 
@@ -284,9 +286,12 @@ for i = 1:n_subs
     end
 
     for j = 1:4
-        [~, deep_idx] = min(cellfun(normU, {stable_eq.x}));
+        mean_exit_all = mod.mean_exit('all', mod.pdf);
+   
+        % find most stable point (max mean exit time)
+        [~, long_exit] = max(cellfun(@(x) x.WT, mean_exit_all));
         s = all_left_right_combo(j, i);
-        x1 = stable_eq(deep_idx).x;
+        x1 = stable_eq(long_exit).x;
         y1 = normU(x1);
         if s > 0
             x2 = all_mods{i}.potential_eff.dom(end-1);
@@ -329,10 +334,6 @@ for i = 1:n_subs
     pause;
 
 end
-
-%% plot 1
-
-
 
 
 %% plot after -> this is for finding examples for figure 2
@@ -458,14 +459,12 @@ widths = all_left_right_width(:, i);
 
 save(sprintf('example_idx_%s.mat', this_pid), 'real_age', 'MU', 'widths', 'depths', 'SIGMA', 'U', 'eq_points', 'new_dom', 'x_')
 
-%%
 
-
-%%
+%% utility function to calculate slope
 function [slope, width, depth] = calc_slope(x1, y1, x2, y2)
-width = x1 - x2;
-depth = y1 - y2;
-slope = depth / width;
+    width = x1 - x2;
+    depth = y1 - y2;
+    slope = depth / width;
 end
 
 

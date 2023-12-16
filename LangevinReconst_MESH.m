@@ -1,7 +1,7 @@
 % LangevinReconst_MESH
 
 % Function to compute nonparametric estimators for time series x
-% S.R. Carpenter, December 2011
+% This code was adapted from the R code of Brock & Carpenter 2012 PLoS one.
 % Inputs:
 %  x0 is the regressor
 %  dx is the first difference of x0
@@ -11,14 +11,18 @@
 %  na is number of a values for computing the kernel
 %  avec is the mesh for the kernel
 
-% Notes: Enea(and NOT Arko)
+% December 2023. Adapted from R code by
+% Enea Ceolini (Leiden University & QuantActions AG)
+% Arko Ghosh (Leiden University)
+
+% Notes:
 % DT we set it to 1 in our case this corresponds to 1 day.
 % bw = 0.3 * std(x0) -> according to Brock & Carpenter 2012 PLoS one paper.
 % avec = linspace(min(x0), max(x0), length(x0) / 5) -> /5 needs to be
 % double checked depending on the length x0
 % na = length(avec)
 
-function out = LangevinReconst_MESH(x0,dx,nx,DT,bw,na,avec)
+function out = LangevinReconst_MESH(x0, dx, nx, DT, bw, na, avec)
 
   % Set up constants and useful preliminaries
   SF = 1/(bw*sqrt(2*pi));  % scale factor for kernel calculation
@@ -53,6 +57,4 @@ function out = LangevinReconst_MESH(x0,dx,nx,DT,bw,na,avec)
 
        out = struct('D1', mu.x, 'D2', diff2.x, 'D4',zeros(size(diff2.x)), 'ErrorD1', zeros(size(diff2.x)), 'ErrorD2', zeros(size(diff2.x)), 'N', ones(size(avec)), 'C', double(avec), ...
             'options', struct('datasize', size(x0), 'domain', [min(avec), max(avec)], 'bins', na, 'Tau', 1:5, 'dt', DT, 'method', 'MESH', 'title', 'MESH'));
-
-
 end
