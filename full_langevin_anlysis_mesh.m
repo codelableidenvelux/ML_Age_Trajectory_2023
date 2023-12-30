@@ -31,7 +31,9 @@ all_has_unstable = zeros(1, n_subs);
 all_left_right_combo = zeros(4, n_subs);
 all_left_right_depth = zeros(2, n_subs);
 all_left_right_width = zeros(2, n_subs);
+all_exit_times = cell(1, n_subs);
 exit_times = zeros(1, n_subs);
+all_stable_points = cell(1, n_subs);
 
 
 % We have 4 cases
@@ -41,6 +43,7 @@ exit_times = zeros(1, n_subs);
 % 4 - extacly 1 unstable point on the right -> left edge slope, right unstable slope
 
 for i = 1:n_subs
+    fprintf("%d\n", i);
     % get trajectory for subject
     x_ = double(sorted_preds{i});
 
@@ -96,6 +99,8 @@ for i = 1:n_subs
     unstable_eq = mod.equilibria([mod.equilibria.stable] == 0);
     stable_eq = mod.equilibria([mod.equilibria.stable] == 1);
 
+    all_stable_points{i} = stable_eq;
+
     n_stable_points(i) = length(stable_eq);
     n_unstable_points(i) = length(unstable_eq);
 
@@ -114,6 +119,9 @@ for i = 1:n_subs
     % no unstable points: case 1 with only 1 stable point. We clculate
     % slope of left and right edges.
     if (~isempty(stable_eq)) && (isempty(unstable_eq))
+
+%         mean_exit_all = mod.mean_exit('all', mod.pdf);
+%         all_exit_times{i} = mean_exit_all;
 
         x_eq = stable_eq(1).x;
         y_eq = normU(x_eq);
@@ -134,7 +142,7 @@ for i = 1:n_subs
 
         % calculate mean exit time for all stable points
         mean_exit_all = mod.mean_exit('all', mod.pdf);
-
+        all_exit_times{i} = mean_exit_all;
         % after this step one can plot the mean exit time
         % mod.plot('mean_exit')
         % mean exit time is calculated for each of the stable points
@@ -192,7 +200,8 @@ for i = 1:n_subs
 
         % calculate mean exit time for all stable points
         mean_exit_all = mod.mean_exit('all', mod.pdf);
-       
+        all_exit_times{i} = mean_exit_all;
+
         % find most stable point (max mean exit time)
         [~, long_exit] = max(cellfun(@(x) x.WT, mean_exit_all));
         exit_times(i) = mean_exit_all{long_exit}.WT;
