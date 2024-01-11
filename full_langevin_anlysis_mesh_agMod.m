@@ -41,6 +41,7 @@ exit_times = zeros(1, n_subs);
 % 4 - extacly 1 unstable point on the right -> left edge slope, right unstable slope
 
 for i = 1:n_subs
+    try
     % get trajectory for subject
     x_ = double(sorted_preds{i});
 
@@ -254,6 +255,13 @@ end
     if ~isreal(all_left_right_combo(:, i))
         fprintf('mmm')
     end
+
+    catch
+
+        display([num2str(i) ':cumsum error'])
+    end
+
+
 end
 
 % given the assumptions on what comes first some value might be negative 
