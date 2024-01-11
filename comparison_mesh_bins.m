@@ -50,15 +50,3 @@ subplot(3,1,3)
 mod.plot('potential_eff')
 xlim(xx)
 title('BIN method')
-%% null distribution
-
-for i = 1:100
-    x2 = x1(randperm(length(x1)));
-    results_S{i} = LangevinReconst_MESH(x2,diff(x2),nx,DT,bw,length(avec),avec);
-    
-end
-
-mod_S = langevin_eq(results_S{42});
-
-figure(5)
-mod_S.plot('potential_eff')
