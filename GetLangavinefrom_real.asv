@@ -1,0 +1,14 @@
+%% Explore the dynamics in terms of alternative stable states and tipping point
+
+
+
+% Get the sleep duration values 
+load('Complied_sleep_timesJan2024.mat', 'ONSub_11')
+x = eval(['ONSub_11']);
+
+
+% Get daily values 
+dx = getdailysleepdur(x, 8);
+
+% Fit langavine dynamics 
+
