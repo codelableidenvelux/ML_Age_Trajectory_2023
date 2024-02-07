@@ -55,6 +55,6 @@ function out = LangevinReconst_MESH(x0, dx, nx, DT, bw, na, avec)
   %  mean.a is the mean function used to compute the conditional variance
   %  S2.x is the conditional variance function
 
-       out = struct('D1', mu.x, 'D2', diff2.x, 'D4',zeros(size(diff2.x)), 'ErrorD1', zeros(size(diff2.x)), 'ErrorD2', zeros(size(diff2.x)), 'N', ones(size(avec)), 'C', double(avec), ...
+       out = struct('D1', mu.x', 'D2', diff2.x', 'D4',zeros(size(diff2.x')), 'ErrorD1', zeros(size(diff2.x')), 'ErrorD2', zeros(size(diff2.x')), 'N', ones(size(avec)), 'C', double(avec), ...
             'options', struct('datasize', size(x0), 'domain', [min(avec), max(avec)], 'bins', na, 'Tau', 1:5, 'dt', DT, 'method', 'MESH', 'title', 'MESH'));
 end

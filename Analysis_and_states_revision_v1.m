@@ -69,7 +69,7 @@ exit_o2y(exit_o2y==0) = deal(NaN);
 
 % young to old [Figure with Age, insert ONE]
 Mdl.y2o = fitlm([-tbl.age_gap tbl.age],log10(exit_y2o),'VarNames' , {'Age_gap' ,'Age', 'Exit time'},'RobustOpts', 'on'); % add sign to make pred - real (i.e., larger the gap the worse) [***3B***]
-Mdl.y2o_ONE = fitlm([-tbl.age_gap(tbl.n_unstable_points==1) tbl.age(tbl.n_unstable_points==1)],log10(exit_y2o(tbl.n_unstable_points==1)),'VarNames' , {'Age_gap' ,'Age', 'Exit time'},'RobustOpts', 'on'); % add sign to make pred - real (i.e., larger the gap the worse) [***Suppl Fig 7 ***]
+Mdl.y2o_ONE = fitlm([-tbl.age_gap(tbl.n_unstable_points == 1 & tbl.n_stable_points == 2) tbl.age(tbl.n_unstable_points == 1 & tbl.n_stable_points == 2)],log10(exit_y2o(tbl.n_unstable_points == 1 & tbl.n_stable_points == 2)),'VarNames' , {'Age_gap' ,'Age', 'Exit time'},'RobustOpts', 'on');
 
 handles3b = plotAdjustedResponse(Mdl.y2o, 'Age'); 
 adjusted3b = prepare_handle_for_python(handles3b);
@@ -82,7 +82,7 @@ adjusted7b.pval = Mdl.y2o_ONE.Coefficients{'Age', 'pValue'};
 
 % old to young [Figure with Age, insert ONE]
 Mdl.o2y = fitlm([-tbl.age_gap tbl.age],log10(exit_o2y),'VarNames' , {'Age_gap' ,'Age', 'Exit time'},'RobustOpts', 'on'); % add sign to make pred - real (i.e., larger the gap the worse) [***3C***]
-Mdl.o2y_ONE = fitlm([-tbl.age_gap(tbl.n_unstable_points==1) tbl.age(tbl.n_unstable_points==1)],log10(exit_o2y(tbl.n_unstable_points==1)),'VarNames' , {'Age_gap' ,'Age', 'Exit time'},'RobustOpts', 'on'); % add sign to make pred - real (i.e., larger the gap the worse) [***Suppl Fig 7 ***]
+Mdl.o2y_ONE = fitlm([-tbl.age_gap(tbl.n_unstable_points == 1 & tbl.n_stable_points == 2) tbl.age(tbl.n_unstable_points == 1 & tbl.n_stable_points == 2)],log10(exit_o2y(tbl.n_unstable_points == 1 & tbl.n_stable_points == 2)),'VarNames' , {'Age_gap' ,'Age', 'Exit time'},'RobustOpts', 'on'); % add sign to make pred - real (i.e., larger the gap the worse) [***Suppl Fig 7 ***]
 
 handles3c = plotAdjustedResponse(Mdl.o2y, 'Age'); 
 adjusted3c = prepare_handle_for_python(handles3c);
