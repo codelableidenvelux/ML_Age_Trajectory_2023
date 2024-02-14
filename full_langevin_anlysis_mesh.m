@@ -42,7 +42,7 @@ all_stable_points = cell(1, n_subs);
 % 3 - exactly 1 unstable point on the left -> left unstable slope and right edge slope
 % 4 - extacly 1 unstable point on the right -> left edge slope, right unstable slope
 
-for i = 52:n_subs
+for i = 1:n_subs
     fprintf("%d\n", i);
     % get trajectory for subject
     x_ = double(sorted_preds{i});
