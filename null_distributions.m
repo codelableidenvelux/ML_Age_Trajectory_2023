@@ -10,7 +10,7 @@
     % 4. We see in how many of the samples the results has P. 0.05
 % Now for the 3 methods
 % a. simple randomization with replacement 
-% b. same spectrum (?)
+% b. same spectrum
 % c. autoregressive model
 
 load('all_age_pred_21d_30_11_2023.mat')
@@ -28,7 +28,7 @@ addpath '/home/enea/code/ML_Age_Trajectory_2023/aay4895-matlab-code'
 n_sub = length(all_preds);
 n_rep = 1000;
 
-for i = 55:75
+for i = 1:n_sub
     surrogate_models = cell(n_rep, 1);
         % get trajectory for subject
     x_ = double(sorted_preds{i});
@@ -91,7 +91,7 @@ addpath '/home/enea/code/ML_Age_Trajectory_2023'/LancsBioMed/Surrogate_Data_Test
 n_sub = length(all_preds);
 n_rep = 1000;
 
-for i = 51:n_sub
+for i = 1:n_sub
 
     surrogate_models = cell(n_rep, 1);
     % get trajectory for subject
@@ -205,108 +205,6 @@ for i = 1:n_sub
         save(sprintf('./surrogate_ar/surrogate_ar_sorted_%d.mat', i), 'mod', 'x_', 'ys_', 'MU', 'SIGMA', 'surrogate_models')
     end
 end
-
-% %% Left most stable point
-% all_pctile = [];
-% for idx = 1:144
-%     try
-%         load(['/home/enea/code/ML_Age_Trajectory_2023/surrogate_ar/surrogate_ar_sorted_', num2str(idx), '.mat'])
-%         mod = all_mods{idx};
-%         pos_left = zeros(1000, 1);
-% 
-%         for i = 1:1000
-%             stable_points = surrogate_models_ar{i}.equilibria([surrogate_models_ar{i}.equilibria.stable] == 1);
-%             pos_left(i) = stable_points(1).x;
-%         end
-% 
-%         stable_points = mod.equilibria([mod.equilibria.stable] == 1);
-% 
-% 
-%         % histogram(pos_left, 'Normalization','probability')
-%         % hold on
-%         % plot([ stable_points(1).x, stable_points(1).x ], [0, .5], '--k')
-%         % plot([ prctile(pos_left, 95), prctile(pos_left, 95) ], [0, .5], '--r')
-%         % 
-%         % Test data
-%         historicalData = rand(1000, 1);
-%         exogenousVariable = 0.7;
-% 
-%         % Compute centile
-%         nless = sum(pos_left < stable_points(1).x);
-%         nequal = sum(pos_left == stable_points(1).x);
-%         centile = 100 * (nless + 0.5*nequal) / length(pos_left);
-%         all_pctile = [all_pctile, centile];
-%     end
-% end
-% 
-% %% Left most UNstable point
-% all_pctile_unstable = [];
-% for idx = 1:144
-% 
-%     try
-%         load(['/home/enea/code/ML_Age_Trajectory_2023/surrogate_ar/surrogate_ar_sorted_', num2str(idx), '.mat'])
-%         fprintf('%d\n', idx)
-%         mod = all_mods{idx};
-%         unstable_points = mod.equilibria([mod.equilibria.stable] == 0);
-%         if length(unstable_points) >= 1
-%             pos_left = [];
-% 
-%             for i = 1:1000
-%                 unstable_points = surrogate_models_ar{i}.equilibria([surrogate_models_ar{i}.equilibria.stable] == 0);
-%                 if length(unstable_points) >= 1
-%                     pos_left = [pos_left, unstable_points(1).x];
-%                 else
-%                     pos_left = [pos_left, -Inf];
-%                 end
-%             end
-% 
-%             unstable_points = mod.equilibria([mod.equilibria.stable] == 0);
-% 
-%             % Compute centile
-%             nless = sum(pos_left < unstable_points(1).x);
-%             nequal = sum(pos_left == unstable_points(1).x);
-%             centile = 100 * (nless + 0.5*nequal) / length(pos_left);
-%             all_pctile_unstable = [all_pctile_unstable, centile];
-%         end
-%     catch ME
-% 
-%     end
-% end
-% 
-% %% max(stable points difference)
-% all_pctile_diff = nan(164, 1);
-% for idx = 1:164
-%     try
-%         load(['/home/enea/code/ML_Age_Trajectory_2023/surrogate_ar/surrogate_ar_sorted_', num2str(idx), '.mat'])
-%         fprintf('%d\n', idx)
-%         stable_points = mod.equilibria([mod.equilibria.stable] == 1);
-%         % we only care about people with at least 2 stable points
-%         if length(stable_points) > 1
-%             pos_left = [];
-% 
-%             for i = 1:1000
-%                 stable_points_sur = surrogate_models_ar{i}.equilibria([surrogate_models_ar{i}.equilibria.stable] == 1);
-%                 if length(stable_points) == length(stable_points_sur)
-%                     pos_left = [ pos_left, abs(stable_points(end).x - stable_points(1).x)];
-%                 else
-%                     pos_left = [ pos_left, 0];
-%                 end
-% 
-%             end
-%             stable_points = mod.equilibria([mod.equilibria.stable] == 1);
-%             real_diff = abs(stable_points(end).x - stable_points(1).x);
-% 
-%             % Compute centile
-%             nless = sum(pos_left < real_diff);
-%             nequal = sum(pos_left == real_diff);
-%             centile = 100 * (nless + 0.5*nequal) / length(pos_left);
-%             all_pctile_diff(idx) = centile;
-%             fprintf('%d: %.2f - %.2f\n', idx, centile, mean(pos_left > 0) * 100)
-% 
-%         end
-%     end
-% end
-
 
 %% max(Mean Exit Time) - RND
 n_sub = 291;

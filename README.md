@@ -1,7 +1,36 @@
 # Age-related behavioral resilience in smartphone touchscreen interaction dynamics    
+Enea Ceolini, K. Richard Ridderinkhof, and Arko Ghosh
 
-Enea Ceolini1, K. Richard Ridderinkhof, and Arko Ghosh
+## Behavioral age model (BAM)
+The training proceedure and output analysis of the BAM can be found in [this notebook](train_BAM.ipynb).
 
+## Comparison bin method vs mesh method
+We compare the output of Langevin reconstuction using two different methods: bin and mesh.
+The analysis on some [sample data](examples_ages.mat) can be found [here](comparison_mesh_bins.m).
+
+## Langevin reconstruction
+We run the langevin reconstruction [here](full_langevin_analysis_mesh.m) on all the available age trajectories.
+
+## Discern younger and older states
+Younger and older states [can be identified](younger_older_bucket_states.m) in subjects with 2 stable points and 1 tipping point.
+
+## Full analysis 
+Fianl and full analysis of the results can be found [here](analysis_and_states.m).
+
+## Bootstrap and null hypotesis testing
+Following [this work](https://www.pnas.org/doi/10.1073/pnas.0802430105#supplementary-materials)
+We want to see in what cases a surrgate time series presents alternative stable states by chance.
+See [here](null_distributions.m).
+ 
+for each sample:
+    1. We create 1000 surrogate times series (each of 3 methods)
+    2. We calculate the potential_eff
+    3. We see what percentage of those have >= number of stable points w.r.t the original time series
+    4. We see in how many of the samples the results has P. 0.05
+Now for the 3 methods
+    a. simple randomization with replacement 
+    b. same spectrum
+    c. autoregressive model  
 
 ## Acknowledgments
 This work builds on top of the work done in:
