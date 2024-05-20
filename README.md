@@ -1,5 +1,5 @@
-# Age-related behavioral resilience in smartphone touchscreen interaction dynamics    
-Enea Ceolini, K. Richard Ridderinkhof, and Arko Ghosh
+# Codes for the paper 'Age-related behavioral resilience in smartphone touchscreen interaction dynamics'    
+Enea Ceolini and Arko Ghosh
 
 ## Behavioral age model (BAM)
 The training proceedure and output analysis of the BAM can be found in [this notebook](train_BAM.ipynb).
