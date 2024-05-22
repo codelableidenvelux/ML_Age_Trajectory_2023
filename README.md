@@ -1,6 +1,6 @@
-# Age-related behavioral resilience in smartphone touchscreen interaction dynamics    
+# Codes for 'Age-related behavioral resilience in smartphone touchscreen interaction dynamics'    
 
-Enea Ceolini1, K. Richard Ridderinkhof, and Arko Ghosh
+Enea Ceolini and Arko Ghosh
 
 
 ## Acknowledgments
